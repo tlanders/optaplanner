@@ -21,9 +21,9 @@ public class LeagueDate {
     @PlanningVariable(valueRangeProviderRefs = {"teamMembers" })
     @HashCodeExclude
     protected TeamMember teamMember0;
-//    @PlanningVariable(valueRangeProviderRefs = {"teamMembers" })
-//    @HashCodeExclude
-//    protected TeamMember teamMember1;
+    @PlanningVariable(valueRangeProviderRefs = {"teamMembers" })
+    @HashCodeExclude
+    protected TeamMember teamMember1;
 //    @PlanningVariable(valueRangeProviderRefs = {"teamMembers" })
 //    @HashCodeExclude
 //    protected TeamMember teamMember2;
@@ -33,8 +33,8 @@ public class LeagueDate {
 
     public String toString() {
         return "League Day: " + date.toString()
-                + "\n  0:" + teamMember0;
-//                + "\n  1:" + teamMember1
+                + "\n  0:" + teamMember0
+                + "\n  1:" + teamMember1;
 //                + "\n  2:" + teamMember2
 //                + "\n  3:" + teamMember3;
     }

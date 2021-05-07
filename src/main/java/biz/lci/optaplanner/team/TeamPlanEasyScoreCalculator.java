@@ -30,11 +30,12 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
             } else {
                 hardScore -= 10;
             }
-//            if(leagueDate.getTeamMember1() != null) {
-//                memberArray[leagueDate.getTeamMember1().getId()]++;
-//            } else {
-//                hardScore -= 10;
-//            }
+            if(leagueDate.getTeamMember1() != null) {
+                memberLeagueDaysArray[leagueDate.getTeamMember1().getId()]++;
+                memberArray[leagueDate.getTeamMember1().getId()]++;
+            } else {
+                hardScore -= 10;
+            }
 //            if(leagueDate.getTeamMember2() != null) {
 //                memberArray[leagueDate.getTeamMember2().getId()]++;
 //            } else {
