@@ -23,11 +23,11 @@ public class TeamPlanner {
 
         TeamPlan unsolvedTeamPlan = new TeamPlan();
         List<TeamMember> members = new ArrayList<>();
-        members.add(new TeamMember(0, "P1"));
-        members.add(new TeamMember(1, "P2"));
-        members.add(new TeamMember(2, "P3"));
-        members.add(new TeamMember(3, "P4"));
-        members.add(new TeamMember(4, "P5"));
+        members.add(new TeamMember(0, "P0"));
+        members.add(new TeamMember(1, "P1"));
+        members.add(new TeamMember(2, "P2"));
+        members.add(new TeamMember(3, "P3"));
+        members.add(new TeamMember(4, "P4"));
         unsolvedTeamPlan.setAvailableTeamMembers(members);
 
         List<LeagueDate> dates = new ArrayList<>();
@@ -42,19 +42,10 @@ public class TeamPlanner {
         TeamPlan solvedTeamPlan = solver.solve(unsolvedTeamPlan);
 
         // Display the result
-        System.out.println("\nSolved team plan:\n"
-                + toDisplayString(solvedTeamPlan));
+        System.out.println("\nSolved team plan:\n" + solvedTeamPlan.toDisplayString());
 
         System.out.println("\nfinal score: " + solvedTeamPlan.getPlanScore());
 
         System.out.println("\nTeamPlanner.main exiting...");
-    }
-
-    public static String toDisplayString(TeamPlan teamPlan) {
-        StringBuilder displayString = new StringBuilder();
-        for (LeagueDate leagueDate : teamPlan.getLeagueDates()) {
-            displayString.append(leagueDate).append("\n");
-        }
-        return displayString.toString();
     }
 }

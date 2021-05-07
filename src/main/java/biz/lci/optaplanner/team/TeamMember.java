@@ -15,6 +15,7 @@ public class TeamMember {
     List<LocalDate> blackoutDates;
 
     public TeamMember(int id, String name, LocalDate ... blackouts) {
+        this.id = id;
         this.name = name;
         this.blackoutDates = Arrays.asList(blackouts);
     }

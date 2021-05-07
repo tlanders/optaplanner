@@ -34,4 +34,14 @@ public class CloudBalance {
     public HardSoftScore getScore() {
         return score;
     }
+
+    public String toDisplayString() {
+        StringBuilder displayString = new StringBuilder();
+        for (Process process : getProcessList()) {
+            Computer computer = process.getComputer();
+            displayString.append("  ").append(process.getLabel()).append(" -> ")
+                    .append(computer == null ? null : computer.getLabel()).append("\n");
+        }
+        return displayString.toString();
+    }
 }

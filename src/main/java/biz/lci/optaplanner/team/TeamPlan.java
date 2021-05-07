@@ -22,4 +22,12 @@ public class TeamPlan {
 
     @PlanningScore
     protected HardSoftScore planScore;
+
+    public String toDisplayString() {
+        StringBuilder displayString = new StringBuilder();
+        for (LeagueDate leagueDate : getLeagueDates()) {
+            displayString.append(leagueDate).append("\n");
+        }
+        return displayString.toString();
+    }
 }

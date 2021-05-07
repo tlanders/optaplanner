@@ -1,8 +1,10 @@
 package biz.lci.optaplanner.cloud;
 
+import lombok.extern.slf4j.Slf4j;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 
+@Slf4j
 public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<CloudBalance, HardSoftScore> {
     /**
      * A very simple implementation. The double loop can easily be removed by using Maps as shown in
@@ -46,6 +48,8 @@ public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<Cl
                 softScore -= computer.getCost();
             }
         }
+
+        log.debug("Potential solution: \n{}\nscore: [{},{}]", cloudBalance.toDisplayString(), hardScore, softScore);
         return HardSoftScore.of(hardScore, softScore);
     }
 }

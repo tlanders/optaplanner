@@ -45,20 +45,11 @@ public class CloudExample {
 
         // Display the result
         System.out.println("\nSolved cloudBalance with 3 computers and 4 processes:\n"
-                + toDisplayString(solvedCloudBalance));
+                + solvedCloudBalance.toDisplayString());
 
         System.out.println("\nfinal score: " + solvedCloudBalance.getScore());
 
         System.out.println("\nCloudExample.main exiting...");
     }
 
-    public static String toDisplayString(CloudBalance cloudBalance) {
-        StringBuilder displayString = new StringBuilder();
-        for (Process process : cloudBalance.getProcessList()) {
-            Computer computer = process.getComputer();
-            displayString.append("  ").append(process.getLabel()).append(" -> ")
-                    .append(computer == null ? null : computer.getLabel()).append("\n");
-        }
-        return displayString.toString();
-    }
 }
