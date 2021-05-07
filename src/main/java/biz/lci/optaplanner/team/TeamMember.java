@@ -23,4 +23,8 @@ public class TeamMember {
     public String toString() {
         return name + "[" + id + "]";
     }
+
+    public boolean isBlackoutDate(LocalDate date) {
+        return blackoutDates.contains(date);
+    }
 }
