@@ -23,11 +23,40 @@ public class TeamPlan {
     @PlanningScore
     protected HardSoftScore planScore;
 
-    public String toDisplayString() {
+    public String toPlanSummaryString() {
         StringBuilder displayString = new StringBuilder();
         for (LeagueDate leagueDate : getLeagueDates()) {
             displayString.append(leagueDate).append("\n");
         }
         return displayString.toString();
+    }
+
+    public String toMemberDaysString() {
+        int[] memberDays = getMemberDays();
+
+        String str = "Days Played By Member:\n";
+        for(int id = 0; id < memberDays.length; id++) {
+            str += ("  " + id + ": " + memberDays[id] + '\n');
+        }
+        return str;
+    }
+
+    private int[] getMemberDays() {
+        int [] memberDays = new int[availableTeamMembers.size()];
+        for(LeagueDate date : getLeagueDates()) {
+            if(date.getTeamMember0() != null) {
+                memberDays[date.getTeamMember0().getId()]++;
+            }
+            if(date.getTeamMember1() != null) {
+                memberDays[date.getTeamMember1().getId()]++;
+            }
+            if(date.getTeamMember2() != null) {
+                memberDays[date.getTeamMember2().getId()]++;
+            }
+            if(date.getTeamMember3() != null) {
+                memberDays[date.getTeamMember3().getId()]++;
+            }
+        }
+        return memberDays;
     }
 }

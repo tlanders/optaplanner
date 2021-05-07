@@ -1,8 +1,5 @@
 package biz.lci.optaplanner.team;
 
-import biz.lci.optaplanner.cloud.CloudBalance;
-import biz.lci.optaplanner.cloud.Computer;
-import biz.lci.optaplanner.cloud.Process;
 import lombok.extern.slf4j.Slf4j;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -36,16 +33,18 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
             } else {
                 hardScore -= 10;
             }
-//            if(leagueDate.getTeamMember2() != null) {
-//                memberArray[leagueDate.getTeamMember2().getId()]++;
-//            } else {
-//                hardScore -= 10;
-//            }
-//            if(leagueDate.getTeamMember3() != null) {
-//                memberArray[leagueDate.getTeamMember3().getId()]++;
-//            } else {
-//                hardScore -= 10;
-//            }
+            if(leagueDate.getTeamMember2() != null) {
+                memberLeagueDaysArray[leagueDate.getTeamMember2().getId()]++;
+                memberArray[leagueDate.getTeamMember2().getId()]++;
+            } else {
+                hardScore -= 10;
+            }
+            if(leagueDate.getTeamMember3() != null) {
+                memberLeagueDaysArray[leagueDate.getTeamMember3().getId()]++;
+                memberArray[leagueDate.getTeamMember3().getId()]++;
+            } else {
+                hardScore -= 10;
+            }
 
             // square the counts > 1 so that multiple doublebookings have higher penalties
             int doubleBookedPenalty = Arrays.stream(memberArray).filter(i -> i > 1).map(i -> i*i).sum();
@@ -60,7 +59,7 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
 
         softScore -= (maxDaysPlayed - minDaysPlayed);
 
-        log.info("Potential solution - score: [{},{}] \n{}", hardScore, softScore, teamPlan.toDisplayString());
+        log.info("Potential solution - score: [{},{}] \n{}", hardScore, softScore, teamPlan.toPlanSummaryString());
 
         return HardSoftScore.of(hardScore, softScore);
     }

@@ -42,7 +42,8 @@ public class TeamPlanner {
         TeamPlan solvedTeamPlan = solver.solve(unsolvedTeamPlan);
 
         // Display the result
-        System.out.println("\nSolved team plan:\n" + solvedTeamPlan.toDisplayString());
+        System.out.println("\nSolved team plan:\n" + solvedTeamPlan.toPlanSummaryString());
+        System.out.println(solvedTeamPlan.toMemberDaysString());
 
         System.out.println("\nfinal score: " + solvedTeamPlan.getPlanScore());
 
