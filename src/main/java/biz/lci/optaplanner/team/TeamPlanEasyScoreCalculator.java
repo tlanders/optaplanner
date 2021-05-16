@@ -4,7 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan, HardSoftScore> {
@@ -21,68 +25,81 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
         int hardScore = 0;
         int softScore = 0;
 
+        // initially only require that all assignments are made
+        for(TeamMemberAssignment assignment : teamPlan.getTeamMemberAssignments()) {
+            if(assignment.getTeamMember() == null) {
+                hardScore -= 1;
+            }
+        }
+
+//        Map<LocalDate, List<TeamMemberAssignment>> assignmentsByDate = teamPlan.getTeamMemberAssignments().stream()
+//                .collect(Collectors.groupingBy(TeamMemberAssignment::getLeagueDate));
+
+
         // HARD: member not scheduled one of their blackout dates
         // HARD: different 4 players for each date
-        int [] memberLeagueDaysArray = new int[teamPlan.getAvailableTeamMembers().size()];
-        for(LeagueDate leagueDate : teamPlan.getLeagueDates()) {
-            int [] memberArray = new int[teamPlan.getAvailableTeamMembers().size()];
-            if(leagueDate.getTeamMember0() != null) {
-                memberLeagueDaysArray[leagueDate.getTeamMember0().getId()]++;
-                memberArray[leagueDate.getTeamMember0().getId()]++;
-
-                if(leagueDate.getTeamMember0().isBlackoutDate(leagueDate.getDate())) {
-                    hardScore -= BLACKOUT_DATE_PENALTY;
-                }
-            } else {
-                hardScore -= EMPTY_SLOT_PENALTY;
-            }
-            if(leagueDate.getTeamMember1() != null) {
-                memberLeagueDaysArray[leagueDate.getTeamMember1().getId()]++;
-                memberArray[leagueDate.getTeamMember1().getId()]++;
-
-                if(leagueDate.getTeamMember1().isBlackoutDate(leagueDate.getDate())) {
-                    hardScore -= BLACKOUT_DATE_PENALTY;
-                }
-            } else {
-                hardScore -= EMPTY_SLOT_PENALTY;
-            }
-            if(leagueDate.getTeamMember2() != null) {
-                memberLeagueDaysArray[leagueDate.getTeamMember2().getId()]++;
-                memberArray[leagueDate.getTeamMember2().getId()]++;
-
-                if(leagueDate.getTeamMember2().isBlackoutDate(leagueDate.getDate())) {
-                    hardScore -= BLACKOUT_DATE_PENALTY;
-                }
-            } else {
-                hardScore -= EMPTY_SLOT_PENALTY;
-            }
-            if(leagueDate.getTeamMember3() != null) {
-                memberLeagueDaysArray[leagueDate.getTeamMember3().getId()]++;
-                memberArray[leagueDate.getTeamMember3().getId()]++;
-
-                if(leagueDate.getTeamMember3().isBlackoutDate(leagueDate.getDate())) {
-                    hardScore -= BLACKOUT_DATE_PENALTY;
-                }
-            } else {
-                hardScore -= EMPTY_SLOT_PENALTY;
-            }
-
-            // square the counts > 1 so that multiple doublebookings have higher penalties
-            hardScore -= Arrays.stream(memberArray)
-                    .filter(i -> i > 1)
-                    .map(i -> i*i*DOUBLEBOOK_PENALTY)
-                    .sum();
-        }
+//        int [] memberLeagueDaysArray = new int[teamPlan.getAvailableTeamMembers().size()];
+//        for(LeagueDate leagueDate : teamPlan.getTeamMemberAssignments()) {
+//            int [] memberArray = new int[teamPlan.getAvailableTeamMembers().size()];
+//            if(leagueDate.getTeamMember0() != null) {
+//                memberLeagueDaysArray[leagueDate.getTeamMember0().getId()]++;
+//                memberArray[leagueDate.getTeamMember0().getId()]++;
+//
+//                if(leagueDate.getTeamMember0().isBlackoutDate(leagueDate.getDate())) {
+//                    hardScore -= BLACKOUT_DATE_PENALTY;
+//                }
+//            } else {
+//                hardScore -= EMPTY_SLOT_PENALTY;
+//            }
+//            if(leagueDate.getTeamMember1() != null) {
+//                memberLeagueDaysArray[leagueDate.getTeamMember1().getId()]++;
+//                memberArray[leagueDate.getTeamMember1().getId()]++;
+//
+//                if(leagueDate.getTeamMember1().isBlackoutDate(leagueDate.getDate())) {
+//                    hardScore -= BLACKOUT_DATE_PENALTY;
+//                }
+//            } else {
+//                hardScore -= EMPTY_SLOT_PENALTY;
+//            }
+//            if(leagueDate.getTeamMember2() != null) {
+//                memberLeagueDaysArray[leagueDate.getTeamMember2().getId()]++;
+//                memberArray[leagueDate.getTeamMember2().getId()]++;
+//
+//                if(leagueDate.getTeamMember2().isBlackoutDate(leagueDate.getDate())) {
+//                    hardScore -= BLACKOUT_DATE_PENALTY;
+//                }
+//            } else {
+//                hardScore -= EMPTY_SLOT_PENALTY;
+//            }
+//            if(leagueDate.getTeamMember3() != null) {
+//                memberLeagueDaysArray[leagueDate.getTeamMember3().getId()]++;
+//                memberArray[leagueDate.getTeamMember3().getId()]++;
+//
+//                if(leagueDate.getTeamMember3().isBlackoutDate(leagueDate.getDate())) {
+//                    hardScore -= BLACKOUT_DATE_PENALTY;
+//                }
+//            } else {
+//                hardScore -= EMPTY_SLOT_PENALTY;
+//            }
+//
+//            // square the counts > 1 so that multiple doublebookings have higher penalties
+//            hardScore -= Arrays.stream(memberArray)
+//                    .filter(i -> i > 1)
+//                    .map(i -> i*i*DOUBLEBOOK_PENALTY)
+//                    .sum();
+//        }
 
         // SOFT: equal # of days for each member
         // SOFT: each member plays with other members at least once
-        int maxDaysPlayed = Arrays.stream(memberLeagueDaysArray).max().getAsInt();
-        int minDaysPlayed = Arrays.stream(memberLeagueDaysArray).min().getAsInt();
+//        int maxDaysPlayed = Arrays.stream(memberLeagueDaysArray).max().getAsInt();
+//        int minDaysPlayed = Arrays.stream(memberLeagueDaysArray).min().getAsInt();
+//
+//        softScore -= (maxDaysPlayed - minDaysPlayed);
+//
+//        log.info("Potential solution - score: [{},{}] \n{}", hardScore, softScore, teamPlan.toPlanSummaryString());
+//
 
-        softScore -= (maxDaysPlayed - minDaysPlayed);
-
-        log.info("Potential solution - score: [{},{}] \n{}", hardScore, softScore, teamPlan.toPlanSummaryString());
-
+        log.info("Potential solution - score: [{},{}] \n{}", hardScore, softScore, teamPlan.getTeamMemberAssignments());
         return HardSoftScore.of(hardScore, softScore);
     }
 }
