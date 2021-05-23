@@ -23,30 +23,30 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
         int hardScore = 0;
         int softScore = 0;
 
-        // initially only require that all assignments are made
-        for(TeamMemberAssignment assignment : teamPlan.getTeamMemberAssignments()) {
-            if(assignment.getTeamMember() == null) {
-                hardScore -= EMPTY_SLOT_PENALTY;
-            }
-        }
-
+        // HARD: all assignment filled with a player
         // HARD: different 4 players for each date
-
+        // HARD: member not scheduled one of their blackout dates
         Map<LocalDate, List<TeamMemberAssignment>> assignmentsByDate = teamPlan.getDateAssignmentMap();
 
         for(LocalDate aDate : assignmentsByDate.keySet()) {
             Set<TeamMember> memberSet = new HashSet<>();
             for(TeamMemberAssignment assignment : assignmentsByDate.get(aDate)) {
-                if(memberSet.contains(assignment.getTeamMember())) {
-                    hardScore -= DOUBLEBOOK_PENALTY;
+                TeamMember member = assignment.getTeamMember();
+                if(member == null) {
+                    hardScore -= EMPTY_SLOT_PENALTY;
                 } else {
-                    memberSet.add(assignment.getTeamMember());
+                    if (memberSet.contains(member)) {
+                        hardScore -= DOUBLEBOOK_PENALTY;
+                    } else {
+                        memberSet.add(member);
+                    }
+                    if (member.isBlackoutDate(aDate)) {
+                        hardScore -= BLACKOUT_DATE_PENALTY;
+                    }
                 }
             }
         }
 
-
-        // HARD: member not scheduled one of their blackout dates
 //        int [] memberLeagueDaysArray = new int[teamPlan.getAvailableTeamMembers().size()];
 //        for(LeagueDate leagueDate : teamPlan.getTeamMemberAssignments()) {
 //            int [] memberArray = new int[teamPlan.getAvailableTeamMembers().size()];

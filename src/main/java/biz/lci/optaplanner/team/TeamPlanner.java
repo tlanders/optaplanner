@@ -37,7 +37,7 @@ public class TeamPlanner {
         TeamPlan unsolvedTeamPlan = new TeamPlan();
         List<TeamMember> members = new ArrayList<>();
         members.add(new TeamMember(0, "P0"));
-        members.add(new TeamMember(1, "P1"));
+        members.add(new TeamMember(1, "P1", LocalDate.of(2021, Month.JULY, 1)));
         members.add(new TeamMember(2, "P2"));
 //        members.add(new TeamMember(3, "P3"));
 //        members.add(new TeamMember(4, "P4"));
