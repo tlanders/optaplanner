@@ -53,6 +53,11 @@ public class TeamPlan {
                 .collect(Collectors.groupingBy(TeamMemberAssignment::getLeagueDate));
     }
 
+    public Map<LocalDate, List<TeamMemberAssignment>> getDateAssignmentMap2() {
+        return teamMemberAssignments.stream()
+                .collect(Collectors.groupingBy(TeamMemberAssignment::getLeagueDate));
+    }
+
 //    public String toMemberDaysString() {
 //        int[] memberDays = getMemberDays();
 //

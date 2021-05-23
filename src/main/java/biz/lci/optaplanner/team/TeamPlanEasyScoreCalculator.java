@@ -5,9 +5,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,16 +26,27 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
         // initially only require that all assignments are made
         for(TeamMemberAssignment assignment : teamPlan.getTeamMemberAssignments()) {
             if(assignment.getTeamMember() == null) {
-                hardScore -= 1;
+                hardScore -= EMPTY_SLOT_PENALTY;
             }
         }
 
-//        Map<LocalDate, List<TeamMemberAssignment>> assignmentsByDate = teamPlan.getTeamMemberAssignments().stream()
-//                .collect(Collectors.groupingBy(TeamMemberAssignment::getLeagueDate));
+        // HARD: different 4 players for each date
+
+        Map<LocalDate, List<TeamMemberAssignment>> assignmentsByDate = teamPlan.getDateAssignmentMap();
+
+        for(LocalDate aDate : assignmentsByDate.keySet()) {
+            Set<TeamMember> memberSet = new HashSet<>();
+            for(TeamMemberAssignment assignment : assignmentsByDate.get(aDate)) {
+                if(memberSet.contains(assignment.getTeamMember())) {
+                    hardScore -= DOUBLEBOOK_PENALTY;
+                } else {
+                    memberSet.add(assignment.getTeamMember());
+                }
+            }
+        }
 
 
         // HARD: member not scheduled one of their blackout dates
-        // HARD: different 4 players for each date
 //        int [] memberLeagueDaysArray = new int[teamPlan.getAvailableTeamMembers().size()];
 //        for(LeagueDate leagueDate : teamPlan.getTeamMemberAssignments()) {
 //            int [] memberArray = new int[teamPlan.getAvailableTeamMembers().size()];

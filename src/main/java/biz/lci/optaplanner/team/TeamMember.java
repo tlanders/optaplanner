@@ -1,6 +1,7 @@
 package biz.lci.optaplanner.team;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -11,7 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 public class TeamMember {
     protected int id;
+    @EqualsAndHashCode.Exclude
     protected String name;
+    @EqualsAndHashCode.Exclude
     List<LocalDate> blackoutDates;
 
     public TeamMember(int id, String name, LocalDate ... blackouts) {
