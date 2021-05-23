@@ -22,6 +22,7 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
     public HardSoftScore calculateScore(TeamPlan teamPlan) {
         int hardScore = 0;
         int softScore = 0;
+        boolean hasEmptySlots = false;
 
         // HARD: all assignment filled with a player
         // HARD: different 4 players for each date
@@ -34,6 +35,7 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
                 TeamMember member = assignment.getTeamMember();
                 if(member == null) {
                     hardScore -= EMPTY_SLOT_PENALTY;
+                    hasEmptySlots = true;
                 } else {
                     if (memberSet.contains(member)) {
                         hardScore -= DOUBLEBOOK_PENALTY;
@@ -46,6 +48,19 @@ public class TeamPlanEasyScoreCalculator implements EasyScoreCalculator<TeamPlan
                 }
             }
         }
+
+        if(!hasEmptySlots) {
+            // SOFT: equal # of days for each member
+            Map<TeamMember, List<TeamMemberAssignment>> memberAssignments = teamPlan.getTeamMemberAssignments().stream()
+                    .collect(Collectors.groupingBy(TeamMemberAssignment::getTeamMember));
+
+            // SOFT: equal # of days for each member
+            int maxDaysPlayed = memberAssignments.values().stream().mapToInt(List::size).max().getAsInt();
+            int minDaysPlayed = memberAssignments.values().stream().mapToInt(List::size).min().getAsInt();
+            softScore -= (maxDaysPlayed - minDaysPlayed);
+        }
+
+        // SOFT: each member plays with other members at least once
 
 //        int [] memberLeagueDaysArray = new int[teamPlan.getAvailableTeamMembers().size()];
 //        for(LeagueDate leagueDate : teamPlan.getTeamMemberAssignments()) {
