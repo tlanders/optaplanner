@@ -8,7 +8,11 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @PlanningSolution
@@ -23,13 +27,25 @@ public class TeamPlan {
     @PlanningScore
     protected HardSoftScore planScore;
 
-//    public String toPlanSummaryString() {
-//        StringBuilder displayString = new StringBuilder();
-//        for (LeagueDate leagueDate : getTeamMemberAssignments()) {
-//            displayString.append(leagueDate).append("\n");
-//        }
-//        return displayString.toString();
-//    }
+    public String toPlanSummaryString() {
+        StringBuilder displayString = new StringBuilder();
+        Map<LocalDate, List<TeamMemberAssignment>> dateAssignmentMap =  teamMemberAssignments.stream()
+                .collect(Collectors.groupingBy(TeamMemberAssignment::getLeagueDate));
+
+        for(LocalDate date : dateAssignmentMap.keySet()) {
+            displayString.append(date).append('\n');
+            List<TeamMember> members = dateAssignmentMap.get(date).stream()
+                    .map(TeamMemberAssignment::getTeamMember)
+                    .sorted(Comparator.comparingInt(TeamMember::getId))
+                    .collect(Collectors.toList());
+
+            for(TeamMember member : members) {
+                displayString.append(member.getName()).append('\n');
+            }
+        }
+
+        return displayString.append('\n').toString();
+    }
 
 //    public String toMemberDaysString() {
 //        int[] memberDays = getMemberDays();
